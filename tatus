@@ -1,0 +1,90 @@
+[1mdiff --git a/models/product_part_lines.py b/models/product_part_lines.py[m
+[1mindex 927621c..648cf75 100644[m
+[1m--- a/models/product_part_lines.py[m
+[1m+++ b/models/product_part_lines.py[m
+[36m@@ -3,15 +3,16 @@[m [mfrom odoo import models, fields, api[m
+ [m
+ class ProductPartLines(models.Model):[m
+     _name = "product.part.lines"[m
+[31m-    _description = "Product Part Lines"[m
+ [m
+     product_id = fields.Many2one("product.product", string="Component Product")[m
+ [m
+     qty = fields.Float("Quantity")[m
+ [m
+[31m-    unit_cost = fields.Float(related="product_id.total_cost", store=True)[m
+[32m+[m[32m    unit_cost = fields.Float(related="product_id.total_cost", store=True, string="Unit Cost")[m
+ [m
+[31m-    # total_cost = fields.Float(compute="_compute_total")[m
+[31m-    total_cost = fields.Float(string="total cost")[m
+[32m+[m[32m    component_cost = fields.Float(compute="_compute_total")[m
+ [m
+[31m-    # @api.depends('qty', 'unit_cost')[m
+[32m+[m[32m    @api.depends('qty', 'unit_cost')[m
+[32m+[m[32m    def _compute_total(self):[m
+[32m+[m[32m        for rec in self:[m
+[32m+[m[32m            rec.component_cost = rec.qty * rec.unit_cost[m
+\ No newline at end of file[m
+[1mdiff --git a/models/product_variant.py b/models/product_variant.py[m
+[1mindex 6d51ee3..970af59 100644[m
+[1m--- a/models/product_variant.py[m
+[1m+++ b/models/product_variant.py[m
+[36m@@ -12,7 +12,7 @@[m [mclass ProductVariant(models.Model):[m
+ [m
+     total_cost = fields.Float(compute="_compute_total_cost", store=True, string="Total Cost")[m
+ [m
+[31m-    part_lines_ids = fields.One2many('product.part.lines', 'product_id', string="Part Lines")[m
+[32m+[m[32m    parts_lines_ids = fields.One2many('product.part.lines', 'product_id', string="Part Lines")[m
+ [m
+ [m
+     @api.depends('material_id','surface_finish_id','uv_printing_id','color_shade_id')[m
+[36m@@ -23,4 +23,5 @@[m [mclass ProductVariant(models.Model):[m
+                     rec.surface_finish_id.price +[m
+                     rec.uv_printing_id.price +[m
+                     rec.color_shade_id.price[m
+[31m-            )[m
+\ No newline at end of file[m
+[32m+[m[32m            )[m
+[41m+[m
+[1mdiff --git a/views/product_variant_view.xml b/views/product_variant_view.xml[m
+[1mindex 5591a7a..caf8e6d 100644[m
+[1m--- a/views/product_variant_view.xml[m
+[1m+++ b/views/product_variant_view.xml[m
+[36m@@ -9,29 +9,30 @@[m
+                     <group>[m
+                         <group>[m
+                             <field name="is_multi_parts"/>[m
+[32m+[m[32m                            <field name="total_cost"/>[m
+                         </group>[m
+ [m
+                         <separator/>[m
+ [m
+[31m-                        <group>[m
+[31m-                            <field name="material_id" invisible="is_multi_parts"/>[m
+[32m+[m[32m                        <group invisible="is_multi_parts">[m
+[32m+[m[32m                            <field name="material_id"/>[m
+ [m
+[31m-                            <field name="surface_finish_id" invisible="is_multi_parts"/>[m
+[32m+[m[32m                            <field name="surface_finish_id"/>[m
+ [m
+[31m-                            <field name="uv_printing_id" invisible="is_multi_parts"/>[m
+[32m+[m[32m                            <field name="uv_printing_id"/>[m
+ [m
+[31m-                            <field name="color_shade_id" invisible="is_multi_parts"/>[m
+[32m+[m[32m                            <field name="color_shade_id"/>[m
+                         </group>[m
+ [m
+                     </group>[m
+                     <notebook>[m
+                         <page>[m
+[31m-                            <field name="part_lines_ids" invisible="not is_multi_parts">[m
+[32m+[m[32m                            <field name="parts_lines_ids" invisible="not is_multi_parts">[m
+                                 <list editable="bottom">[m
+                                     <field name="product_id"/>[m
+                                     <field name="qty"/>[m
+                                     <field name="unit_cost"/>[m
+[31m-                                    <field name="total_cost"/>[m
+[32m+[m[32m                                    <field name="component_cost"/>[m
+                                 </list>[m
+                             </field>[m
+                         </page>[m

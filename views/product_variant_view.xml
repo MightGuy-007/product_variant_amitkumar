@@ -9,29 +9,30 @@
                     <group>
                         <group>
                             <field name="is_multi_parts"/>
+                            <field name="total_cost"/>
                         </group>
 
                         <separator/>
 
-                        <group>
-                            <field name="material_id" invisible="is_multi_parts"/>
+                        <group invisible="is_multi_parts">
+                            <field name="material_id"/>
 
-                            <field name="surface_finish_id" invisible="is_multi_parts"/>
+                            <field name="surface_finish_id"/>
 
-                            <field name="uv_printing_id" invisible="is_multi_parts"/>
+                            <field name="uv_printing_id"/>
 
-                            <field name="color_shade_id" invisible="is_multi_parts"/>
+                            <field name="color_shade_id"/>
                         </group>
 
                     </group>
                     <notebook>
                         <page>
-                            <field name="part_lines_ids" invisible="not is_multi_parts">
+                            <field name="parts_lines_ids" invisible="not is_multi_parts">
                                 <list editable="bottom">
                                     <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="unit_cost"/>
-                                    <field name="total_cost"/>
+                                    <field name="component_cost"/>
                                 </list>
                             </field>
                         </page>

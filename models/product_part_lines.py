@@ -3,15 +3,16 @@ from odoo import models, fields, api
 
 class ProductPartLines(models.Model):
     _name = "product.part.lines"
-    _description = "Product Part Lines"
 
     product_id = fields.Many2one("product.product", string="Component Product")
 
     qty = fields.Float("Quantity")
 
-    unit_cost = fields.Float(related="product_id.total_cost", store=True)
+    unit_cost = fields.Float(related="product_id.total_cost", store=True, string="Unit Cost")
 
-    # total_cost = fields.Float(compute="_compute_total")
-    total_cost = fields.Float(string="total cost")
+    component_cost = fields.Float(compute="_compute_total")
 
-    # @api.depends('qty', 'unit_cost')
+    @api.depends('qty', 'unit_cost')
+    def _compute_total(self):
+        for rec in self:
+            rec.component_cost = rec.qty * rec.unit_cost

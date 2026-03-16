@@ -12,7 +12,7 @@ class ProductVariant(models.Model):
 
     total_cost = fields.Float(compute="_compute_total_cost", store=True, string="Total Cost")
 
-    part_lines_ids = fields.One2many('product.part.lines', 'product_id', string="Part Lines")
+    parts_lines_ids = fields.One2many('product.part.lines', 'product_id', string="Part Lines")
 
 
     @api.depends('material_id','surface_finish_id','uv_printing_id','color_shade_id')
@@ -24,3 +24,4 @@ class ProductVariant(models.Model):
                     rec.uv_printing_id.price +
                     rec.color_shade_id.price
             )
+

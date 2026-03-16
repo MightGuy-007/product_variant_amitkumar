@@ -5,7 +5,4 @@ class SurfaceFinish(models.Model):
     _description = 'Product Surface Finish'
 
     name = fields.Char(string="Name")
-    amount = fields.Float(string="Amount")
-
-
-    
+    price = fields.Float(string="Price")

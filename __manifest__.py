@@ -7,6 +7,7 @@
     'depends': ['base','web','product'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/product_variant_view.xml',
     ],
 

@@ -1,0 +1,14 @@
+<odoo>
+    <record id="product_variant_form_view" model="ir.ui.view">
+        <field name="name">product_variant_form_view</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales']" position="after">
+                <page name="Part specification">
+                    <field name="material"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

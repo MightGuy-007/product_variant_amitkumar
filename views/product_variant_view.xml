@@ -5,34 +5,59 @@
         <field name="model">product.product</field>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='sales']" position="after">
-                <page name="Part specification">
+                <page string="Part Specification" name="part_specification">
                     <group>
-                        <group>
-                            <field name="is_multi_parts"/>
-                            <field name="total_cost"/>
+                        <group string="Configuration">
+                            <field name="type"/>
+                            <field name="is_multi_parts" invisible="type == 'accessories'"/>
                         </group>
 
-                        <separator/>
-
-                        <group invisible="is_multi_parts">
+                        <group
+                            string="Specification"
+                            invisible="is_multi_parts">
                             <field name="material_id"/>
-
                             <field name="surface_finish_id"/>
-
                             <field name="uv_printing_id"/>
-
                             <field name="color_shade_id"/>
                         </group>
 
+                        <group string="Cost Information">
+                            <field name="product_cost"/>
+                            <field name="accessories_cost" readonly="1"/>
+                            <field name="total_cost" readonly="1"/>
+                        </group>
                     </group>
-                    <notebook>
-                        <page>
-                            <field name="parts_lines_ids" invisible="not is_multi_parts">
+                    <!--
+                        • Visible for:
+                            – is_multi_parts = True  → all three types allowed in domain
+                            – type = 'product' or 'subproduct' (single-part) → accessories only
+                    -->
+                    <notebook invisible="type == 'accessories' and not is_multi_parts">
+                        <page string="Accessories &amp; Sub Products" name="accessories_and_subproducts">
+                            <field name="parts_lines_ids">
                                 <list editable="bottom">
-                                    <field name="product_id"/>
+                                    <!--
+                                        Dynamic domain on product_id:
+                                        • Multi-part  → product + subproduct + accessories
+                                        • Single-part → accessories only
+                                    -->
+                                    <field name="parent_product_id" column_invisible="1"/>
+                                    <field name="is_multi_parts" column_invisible="1"/>
+                                    <field
+                                        name="product_id"
+                                        domain="[
+                                            ('type', 'in', is_multi_parts and ['product', 'subproduct', 'accessories']
+                                                    or ['accessories']),
+                                            ('id', '!=', parent.id)
+                                        ]"
+
+                                        context="{'default_type': 'accessories'}"
+                                    />
+
+                                    <field name="line_type" readonly="1" optional="show"/>
                                     <field name="qty"/>
-                                    <field name="unit_cost"/>
-                                    <field name="component_cost"/>
+                                    <field name="unit_cost" readonly="1"/>
+                                    <field name="component_cost" readonly="1"/>
                                 </list>
                             </field>
                         </page>

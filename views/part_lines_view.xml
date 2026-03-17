@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <record id="product_variant_lines_list_view" model="ir.ui.view">
+        <field name="name">product.variant.lines.list.view</field>
+        <field name="model">product.part.lines</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="parent_product_id"/>
+                <field name="product_id"/>
+                <field name="line_type" optional="show"/>
+                <field name="qty"/>
+                <field name="unit_cost"/>
+                <field name="component_cost"/>
+            </list>
+        </field>
+    </record>
 
+    <record id="product_variant_lines_form_view" model="ir.ui.view">
+        <field name="name">product.variant.lines.form.view</field>
+        <field name="model">product.part.lines</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Parent">
+                            <field name="parent_product_id"/>
+                        </group>
+                        <group string="Component">
+                            <field name="product_id"
+                                domain="[
+                                    ('type', 'in',
+                                        is_multi_parts
+                                            and ['product', 'subproduct', 'accessories']
+                                            or ['accessories']
+                                    )
+                                ]"
+                            />
+                            <field name="line_type" readonly="1"/>
+                        </group>
+                        <group string="Costing">
+                            <field name="qty"/>
+                            <field name="unit_cost" readonly="1"/>
+                            <field name="component_cost" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="part_lines_action_window" model="ir.actions.act_window">
+        <field name="name">Part Lines</field>
+        <field name="res_model">product.part.lines</field>
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+    <menuitem id="parts_lines_view" name="Parts Lines"/>
+
+    <menuitem
+        id="parts_lines_record"
+        name="Lines Record"
+        parent="parts_lines_view"
+        action="part_lines_action_window"/>
 </odoo>

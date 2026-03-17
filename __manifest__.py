@@ -9,11 +9,12 @@
     'data': [
         'security/ir.model.access.csv',
         'views/product_variant_view.xml',
+        'views/part_lines_view.xml',
     ],
 
     'license':'LGPL-3',
 
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
     'application': True,
 }
